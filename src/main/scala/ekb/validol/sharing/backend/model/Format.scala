@@ -2,7 +2,7 @@ package ekb.validol.sharing.backend.model
 
 import java.util.UUID
 
-import ekb.validol.sharing.backend.model.Protocol.{AddRequest, ListResponse, ValidationError}
+import ekb.validol.sharing.backend.model.Protocol._
 import ekb.validol.sharing.backend.model.Selection.{Cell, CellRange, Empty}
 import spray.json._
 
@@ -44,23 +44,26 @@ object Format extends DefaultJsonProtocol {
     }
   }
 
-  implicit object SelectionRowProtocol extends JsonWriter[(SheetName.Value, Seq[Selection])] {
-    override def write(obj: (SheetName.Value, Seq[Selection])): JsValue = {
-      val items = obj._2.map {
+  implicit object SelectionRowProtocol extends JsonWriter[(SheetName.Value, Selection)] {
+    override def write(obj: (SheetName.Value, Selection)): JsValue = {
+      obj._2 match {
         case c: Cell => JsString(s"${obj._1}!${c.toString}")
         case r: CellRange => JsString(s"${obj._1}!${r.leftCell}:${r.rightCell}")
         case Empty => JsString(s"${obj._1}")
       }
-      JsArray(items.toVector)
     }
   }
 
   implicit object SharingProtocol extends JsonWriter[(UUID, Sharing)] {
     override def write(obj: (UUID, Sharing)): JsValue = {
+      val selections = obj._2.selections.map { case (k, v) =>
+        v.map(d => k -> d)
+      }.flatten
+
       JsObject(
         "id" -> JsString(obj._1.toString),
         "users" -> JsArray(obj._2.users.map(_.toJson).toVector),
-        "selections" -> JsArray(obj._2.selections.map(_.toJson).toVector)
+        "selections" -> JsArray(selections.map(_.toJson).toVector)
       )
     }
   }
@@ -76,6 +79,18 @@ object Format extends DefaultJsonProtocol {
       JsObject(
         "errors" -> JsArray(obj.errors.map(JsString.apply).toVector)
       )
+    }
+  }
+
+  implicit object SuccessResponseProtocol extends JsonWriter[SuccessResponse] {
+    override def write(obj: SuccessResponse): JsValue = {
+      JsObject("id" -> JsString(obj.id.toString))
+    }
+  }
+
+  implicit object ErrorResponseProtocol extends JsonWriter[ErrorResponse] {
+    override def write(obj: ErrorResponse): JsValue = {
+      JsObject("errors" -> JsArray(JsString(obj.msg)))
     }
   }
 

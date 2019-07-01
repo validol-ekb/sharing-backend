@@ -22,7 +22,6 @@ class MainControllerImpl(storage: Storage[StorageKey, StorageItem])(implicit ec:
   }
 
   private def handleAddRequest(req: AddRequest): Future[ApiResponse] = {
-
     storage.add(Sharing(req.users, req.selections)).map(SuccessResponse.apply)
   }
 
@@ -35,6 +34,8 @@ class MainControllerImpl(storage: Storage[StorageKey, StorageItem])(implicit ec:
     }
     if (errors.nonEmpty) {
       Future.failed(ValidationError(errors))
+    } else if (req.users.isEmpty || req.selections.isEmpty) {
+      Future.failed(ValidationError(Seq("Invalid request")))
     } else Future.successful(req)
   }
 
