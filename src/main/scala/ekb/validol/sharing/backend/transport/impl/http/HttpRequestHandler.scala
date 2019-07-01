@@ -49,13 +49,10 @@ trait HttpRequestHandler {
       entity.dataBytes.runFold(ByteString(""))(_ ++ _).map { bytes =>
         bytes.utf8String.parseJson.convertTo[AddRequest]
       }
-    case HttpRequest(HttpMethods.GET, Uri.Path("/ping"), _, _, _) => Future.successful(PingRequest)
   }
 
 
   override protected def convertResponse: PartialFunction[Protocol.ApiResponse, HttpResponse] = {
-    case PongResponse =>
-      HttpResponse(StatusCodes.OK, entity = "PONG!")
     case resp: ListResponse =>
       HttpResponse(StatusCodes.OK, entity = HttpEntity(ContentTypes.`application/json`, resp.toJson.compactPrint))
     case resp: SuccessResponse =>

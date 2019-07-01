@@ -14,7 +14,6 @@ class MainControllerImpl(storage: Storage[StorageKey, StorageItem])(implicit ec:
   override def handleRequestAsync: PartialFunction[ApiRequest, Future[ApiResponse]] = {
     case ListRequest => handleListRequest()
     case req: AddRequest => validateAddRequest(req).flatMap(handleAddRequest)
-    case PingRequest => Future.successful(PongResponse)
   }
 
   private def handleListRequest(): Future[ApiResponse] = {

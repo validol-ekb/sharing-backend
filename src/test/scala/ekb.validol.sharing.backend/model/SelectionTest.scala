@@ -3,7 +3,7 @@ package ekb.validol.sharing.backend.model
 import ekb.validol.sharing.backend.model.Selection.{Cell, CellRange}
 import org.scalatest.{FreeSpec, Matchers}
 
-class SelectionTest extends FreeSpec with Matchers{
+class SelectionTest extends FreeSpec with Matchers {
 
   "Cell" - {
 
