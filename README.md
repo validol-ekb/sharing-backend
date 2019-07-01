@@ -6,7 +6,7 @@ In your preferred language, write a back end API application that receives, stor
 selections. The client will send both as lists, which means a single sharing specify multiple recipients and multiple selections.
 
 ## Solution notes
-This solution is written on Scala language with list of the libraries:
+This solution is written with Scala language ant list of the Scala libraries:
 * [akka-http](https://doc.akka.io/docs/akka-http/current/index.html). Application HTTP-transport is implemented with this library. 
 * [akka](https://akka.io/). Application storage layer is using an actor interface.
 * [spray-json](https://github.com/spray/spray-json). JSON serialization/deserialization.
@@ -17,17 +17,17 @@ All project is stored in `ekb.validol.sharing.backend` package. The way this app
 Also for tests and supporting simplicity application is splitted by layers due CAKE-pattern (a.k.a Baklava code). Here is a short
 description of project structure:
 * `controller` package. This part is responsible for application data flow. Here you can find `MainController` which is 
-responsible for all requests handling. This application is quite small that's why it contains only one controller, but the application
-is designed in way of containing dozens of controllers. You can add new controller and you don't need to do any modifications, just extension ([open/close principle](https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle)).
+responsible for all requests handling. This application is quite small that's why it contains only one controller, but it
+is designed in the way of containing dozens of controllers. You can add new controller and you don't need to do any modifications, just extension ([open/close principle](https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle)).
 Also `MainController` is stateless therefore it's thread-safe.
 * `model` package. Here you can find all application business models. All models are designed in according to [DDD](https://en.wikipedia.org/wiki/Domain-driven_design) principles.
-The most interesting entity is `Selection`. Here you can find an abstraction of possible selections. Also `Cell` entity implements `Ordering` trait
+The most interesting entity is `Selection`. Here you can find an abstraction of all possible selections. `Cell` entity implements `Ordering` trait
 that's why we can compare/sort `Cell` entities which is really useful. Also in `Format` object you can find all stuff about serialization/deserialization.
 * `storage` package. This part is responsible for data storing. Current version supports only in memory data storage. This storage is absolutely thread-safe, because it 
 stores data in Actor. If we need persistence we can easily replace Actor with Persistent Actor without any code changing. I decided to implement 
-this part in the simplest way without any heavy abstractions and relations. In this situations all this abstractions decrease performance. For example it's 
+this part in the simplest way without any heavy abstractions and relations. In this situations all such abstractions decrease performance. For example it's 
 obvious that sometimes (even often) users can duplicate selections or have cross selections and I think the best way to solve this problem would be 
-asynchronous task or event another micro service. Realtime application should chase only the aim of performance and availability.
+asynchronous task or even another micro service. Realtime application should chase only the aim of performance and availability.
 * `utils` package. Package for some helpful tools such as email validator. Nothing interesting at all.
 * `transport` package. This is the public API package. Current application has only HTTP RESTFull interface. In according to 
 [Richardson's Maturity Model](https://martinfowler.com/articles/richardsonMaturityModel.html) we can refer this application to Level 3. Of course application is
@@ -38,7 +38,7 @@ This abstraction provides us really powerful opportunity to determine only route
 1. `convertRequest` which does converting from `HttpRequest` => `ApiRequest` model.
 2. This step depends on controllers that we have in our application. If we have controller which is defined for current `ApiRequest` we send message to it.
 If we don't - we send an error to client.
-3. After controller's calculation application passes the result to `convertResponse` partial function which does converting from `ApiResponse` => `HttpResponse`.
+3. After controller's calculation application passes the result to `convertResponse` partial function which converts it from `ApiResponse` => `HttpResponse`.
 
 In short words this part of the system works like dynamic flow. It's really powerful and gives us wide opportunities to extend an application. Here is a small scheme how it works:
 
@@ -54,7 +54,7 @@ If you don't have `docker-composer` you can use docker directly
 ```bash
 $ docker run -it --rm --name sharing-backend -p 9999:9999 sharing-backend/sharing-backend
 ```
-After this commands application will start on `0.0.0.0:9999` address. You can check it easily by command
+After this commands application will start working on `0.0.0.0:9999` address. You can check it easily by command
 ```bash
 curl -XGET 'http://localhost:9999/sharings'
 ```
@@ -84,13 +84,13 @@ For production it's more convenient to pass parameters via environment variables
 ## My answers
 
 1. I think the best way to solve this issue would be to add such abstraction as request context and inject this context directly to every request. If we speak about current application
-the most convenient way is to pass this context via implicit variable at constructor or at method signature, the same way as ExecutionContext is passing now. It's pretty easy to implement now. 
+the most convenient way is to pass this context via implicit variable at constructor or at method signature, the same way as ExecutionContext is passing now. It's pretty easy to implement. 
 We need just to change signature of controller and nothing else.
 
 2. It was really interesting. I've spent about 2-3 hours during modeling and thinking about application data model. 
 Then I've started implementing of main interfaces in the application. Work of software architect is full of compromises and 
 every time you need to think about domain model, performance, supporting, etc. I think my application is more about performance and supporting and 
-the most obvious way to improve it is to add persistent storage, something lightweight (redis, rockDB, etc.) instead of Full relational databases. 
+the most obvious way to improve it is to add persistent storage, something lightweight (redis, rockDB, etc.) instead of full relational databases. 
 I hope you will like it and I'll have an opportunity to tell you more about this application and my experience at all. Thank you!         
 
 
