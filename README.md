@@ -42,7 +42,7 @@ If we don't - we send an error to client.
 
 In short words this part of the system works like dynamic flow. It's really powerful and gives us wide opportunities to extend an application. Here is a small scheme how it works:
 
-![data flow scheme](https://drive.google.com/open?id=1fDDW0nO7zXPJ_WN399UMgOYXYJrd_Ey2)
+![data flow scheme](https://ucd15f5defe2f2fe4c2f8387581a.previews.dropboxusercontent.com/p/thumb/AAeDNw25D4o3iz_-Bly_q2YgJjMhBnSB9UnfQwqke00W6x2QPnuduzsT6t8ZgUS38hhimMS8dIjY74OWcCIHyfK6F-0MwrTouTBgNHVBCmTbd6mQyb0SAT12QpepNNZe0K6kKXy9D_P4atKLmjTWRRRJMLg73dPD50aC-buHJjsfITMdEghO7OE60Szi8Vx79e5Onv54lL_Un32PNhqeiZh-oQzLmHUZk-XGLkPZ17Srvj05G6JiA_7B2isZHIWPUKBHOtBG-Ira9JY1cZAhqkPKGhyHaxi5dqWDpst_6Y_ew2FxeFq64ZEaSqPeWjKQiEzOdDUwqigK1wgVgYe_9X8npPO_wY6fOtWjX_zHeyunrG3PD0exqSAKixTMXhPVDjc/p.png?fv_content=true&size_mode=5)
 
 
 
