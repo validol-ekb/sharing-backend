@@ -1,0 +1,6 @@
+version: '3'
+services:
+  sharing-backend:
+    image: sharing-backend/sharing-backend
+    ports:
+      - "9999:9999"
