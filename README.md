@@ -44,6 +44,23 @@ In short words this part of the system works like dynamic flow. It's really powe
 
 ![data flow scheme](https://ucd15f5defe2f2fe4c2f8387581a.previews.dropboxusercontent.com/p/thumb/AAeDNw25D4o3iz_-Bly_q2YgJjMhBnSB9UnfQwqke00W6x2QPnuduzsT6t8ZgUS38hhimMS8dIjY74OWcCIHyfK6F-0MwrTouTBgNHVBCmTbd6mQyb0SAT12QpepNNZe0K6kKXy9D_P4atKLmjTWRRRJMLg73dPD50aC-buHJjsfITMdEghO7OE60Szi8Vx79e5Onv54lL_Un32PNhqeiZh-oQzLmHUZk-XGLkPZ17Srvj05G6JiA_7B2isZHIWPUKBHOtBG-Ira9JY1cZAhqkPKGhyHaxi5dqWDpst_6Y_ew2FxeFq64ZEaSqPeWjKQiEzOdDUwqigK1wgVgYe_9X8npPO_wY6fOtWjX_zHeyunrG3PD0exqSAKixTMXhPVDjc/p.png?fv_content=true&size_mode=5)
 
+## Questions need to answer
+1. If you had to execute some logic (for example generating a new document) every time a sharing is added/modified, where would you
+   put that piece of code? What changes would you have to do in your project?
+2. How was your API design process and what was your motivation to on the choice of patterns.
+
+## My answers
+
+1. I think the best way to solve this issue would be to add such abstraction as request context and inject this context directly to every request. If we speak about current application
+the most convenient way is to pass this context via implicit variable at constructor or at method signature, the same way as ExecutionContext is passing now. It's pretty easy to implement now. 
+We need just to change signature of controller and nothing else.
+
+2. It was really interesting. I've spent about 2-3 hours during modeling and thinking about application data model. 
+Then I've started implementing of main interfaces in the application. Work of software architect is full of compromises and 
+every time you need to think about domain model, performance, supporting, etc. I think my application is more about performance and supporting and 
+the most obvious way to improve it is to add persistent storage, something lightweight (redis, rockDB, etc.) instead of Full relational databases. 
+I hope you will like it and I'll have an opportunity to tell you more about this application and my experience at all. Thank you!         
+
 
 
   
