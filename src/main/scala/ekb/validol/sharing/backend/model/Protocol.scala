@@ -2,6 +2,8 @@ package ekb.validol.sharing.backend.model
 
 import java.util.UUID
 
+import scala.util.control.NoStackTrace
+
 object Protocol {
 
   sealed trait ApiRequest
@@ -15,5 +17,6 @@ object Protocol {
   case class ListResponse(sharings: Map[UUID, Sharing]) extends ApiResponse
   case class SuccessResponse(id: UUID) extends ApiResponse
   case class ErrorResponse(msg: String) extends ApiResponse
+  case class ValidationError(errors: Seq[String]) extends Exception with NoStackTrace
 
 }

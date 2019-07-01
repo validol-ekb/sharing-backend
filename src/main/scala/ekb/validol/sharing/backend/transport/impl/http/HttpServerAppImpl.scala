@@ -53,6 +53,8 @@ class HttpServerAppImpl(config: Config)(implicit system: ActorSystem, ec: Execut
       p(in).recover {
         case _: DeserializationException =>
           HttpResponse(StatusCodes.BadRequest)
+        case err: ValidationError =>
+          HttpResponse(StatusCodes.BadRequest, entity = HttpEntity(ContentTypes.`application/json`, err.toJson.compactPrint))
         case _: Throwable =>
           HttpResponse(StatusCodes.InternalServerError)
       }
@@ -73,9 +75,9 @@ class HttpServerAppImpl(config: Config)(implicit system: ActorSystem, ec: Execut
     case PongResponse =>
       HttpResponse(StatusCodes.OK, entity = "PONG!")
     case resp: ListResponse =>
-      HttpResponse(StatusCodes.OK, entity = HttpEntity(ContentTypes.`application/json`, resp.toJson.prettyPrint))
+      HttpResponse(StatusCodes.OK, entity = HttpEntity(ContentTypes.`application/json`, resp.toJson.compactPrint))
     case SuccessResponse(id) =>
-      HttpResponse(StatusCodes.Accepted, entity = HttpEntity(ContentTypes.`application/json`, JsObject("id" -> JsString(id.toString)).prettyPrint))
+      HttpResponse(StatusCodes.Accepted, entity = HttpEntity(ContentTypes.`application/json`, JsObject("id" -> JsString(id.toString)).compactPrint))
     case ErrorResponse(msg) => HttpResponse(StatusCodes.NotFound, entity = msg)
   }
 }

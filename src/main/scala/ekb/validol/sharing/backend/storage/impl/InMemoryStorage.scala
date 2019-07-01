@@ -35,7 +35,7 @@ class InMemoryStorage(config: Config)(implicit system: ActorSystem, ec: Executio
 }
 
 object InMemoryStorage {
-  
+
   type StorageKey = UUID
   type StorageItem = Sharing
 

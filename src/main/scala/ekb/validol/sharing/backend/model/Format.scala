@@ -2,7 +2,7 @@ package ekb.validol.sharing.backend.model
 
 import java.util.UUID
 
-import ekb.validol.sharing.backend.model.Protocol.{AddRequest, ListResponse}
+import ekb.validol.sharing.backend.model.Protocol.{AddRequest, ListResponse, ValidationError}
 import ekb.validol.sharing.backend.model.Selection.{Cell, CellRange, Empty}
 import spray.json._
 
@@ -30,7 +30,7 @@ object Format extends DefaultJsonProtocol {
           case arr: JsArray => arr.elements.map(_.convertTo[String])
           case _ => deserializationError("Unknown request format")
         },
-        selections = obj.fields("sections") match {
+        selections = obj.fields("selections") match {
           case arr: JsArray =>
             arr.elements.map(_.convertTo[(SheetName.Value, Selection)])
               .groupBy(_._1)
@@ -44,22 +44,12 @@ object Format extends DefaultJsonProtocol {
     }
   }
 
-  implicit object SelectionProtocol extends JsonWriter[Selection] {
-    override def write(obj: Selection): JsValue = obj match {
-      case c: Cell => cellToJson(c)
-      case r: CellRange => JsString(s"!${cellToJson(r.leftCell)}:${cellToJson(r.rightCell)}")
-      case Empty => JsString("")
-    }
-
-    private def cellToJson(c: Cell): JsValue = {
-      JsString(s"!${c.letter}${c.number}")
-    }
-  }
-
   implicit object SelectionRowProtocol extends JsonWriter[(SheetName.Value, Seq[Selection])] {
     override def write(obj: (SheetName.Value, Seq[Selection])): JsValue = {
-      val items = obj._2.map { s =>
-        JsString(s"${obj._1}${s.toJson}")
+      val items = obj._2.map {
+        case c: Cell => JsString(s"${obj._1}!${c.toString}")
+        case r: CellRange => JsString(s"${obj._1}!${r.leftCell}:${r.rightCell}")
+        case Empty => JsString(s"${obj._1}")
       }
       JsArray(items.toVector)
     }
@@ -78,6 +68,14 @@ object Format extends DefaultJsonProtocol {
   implicit object ListResponseProtocol extends JsonWriter[ListResponse] {
     override def write(obj: ListResponse): JsValue = {
       JsArray(obj.sharings.map(_.toJson).toVector)
+    }
+  }
+
+  implicit object ValidationResponseProtocol extends JsonWriter[ValidationError] {
+    override def write(obj: ValidationError): JsValue = {
+      JsObject(
+        "errors" -> JsArray(obj.errors.map(JsString.apply).toVector)
+      )
     }
   }
 

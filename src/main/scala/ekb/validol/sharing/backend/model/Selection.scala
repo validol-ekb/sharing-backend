@@ -20,6 +20,8 @@ object Selection {
     }
 
     override def isValid: Boolean = number > 0
+
+    override def toString: String = s"$letter${number.toString}"
   }
 
   case class CellRange(leftCell: Cell, rightCell: Cell) extends Selection {
