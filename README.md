@@ -44,7 +44,39 @@ In short words this part of the system works like dynamic flow. It's really powe
 
 ![data flow scheme](https://ucd15f5defe2f2fe4c2f8387581a.previews.dropboxusercontent.com/p/thumb/AAeDNw25D4o3iz_-Bly_q2YgJjMhBnSB9UnfQwqke00W6x2QPnuduzsT6t8ZgUS38hhimMS8dIjY74OWcCIHyfK6F-0MwrTouTBgNHVBCmTbd6mQyb0SAT12QpepNNZe0K6kKXy9D_P4atKLmjTWRRRJMLg73dPD50aC-buHJjsfITMdEghO7OE60Szi8Vx79e5Onv54lL_Un32PNhqeiZh-oQzLmHUZk-XGLkPZ17Srvj05G6JiA_7B2isZHIWPUKBHOtBG-Ira9JY1cZAhqkPKGhyHaxi5dqWDpst_6Y_ew2FxeFq64ZEaSqPeWjKQiEzOdDUwqigK1wgVgYe_9X8npPO_wY6fOtWjX_zHeyunrG3PD0exqSAKixTMXhPVDjc/p.png?fv_content=true&size_mode=5)
 
-## Questions need to answer
+## How to run
+For simplicity I wrapped application with docker. You can build & run it just with commands
+```bash
+$ sbt docker
+$ docker-compose up
+```
+If you don't have `docker-composer` you can use docker directly
+```bash
+$ docker run -it --rm --name sharing-backend -p 9999:9999 sharing-backend/sharing-backend
+```
+After this commands application will start on `0.0.0.0:9999` address. You can check it easily by command
+```bash
+curl -XGET 'http://localhost:9999/sharings'
+```
+and you will see an output:
+```json
+[]
+```
+it means that there aren't any sharing in the storage.
+If you want to add something to the application just run this command
+```bash
+curl -XPOST 'http://localhost:9999/sharings' -H "Content-Type: application/json" -d '{"users":["foo@bar.com","example@gmail.com"],"selections":["HRReport!A1","Actuals!B1:B100","Assumptions","Dashboard!C1:C4"]}
+```
+As a response you will receive a JSON-object with `sharing` uuid:
+```json
+{"id":"6755ce20-d9f4-468e-8ad6-8505ead69116"}
+```
+That's all.
+All docker configuration is hardcoded and of course it isn't a production ready configuration. 
+For production it's more convenient to pass parameters via environment variables.
+  
+## Questions
+
 1. If you had to execute some logic (for example generating a new document) every time a sharing is added/modified, where would you
    put that piece of code? What changes would you have to do in your project?
 2. How was your API design process and what was your motivation to on the choice of patterns.
